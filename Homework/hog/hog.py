@@ -10,6 +10,12 @@ GOAL_SCORE = 100  # The goal of Hog is to score 100 points.
 ######################
 
 
+def get_ones_and_tens(number):
+    ones = number % 10
+    tens = number // 10
+    return [ones, tens]
+
+
 def roll_dice(num_rolls, dice=six_sided):
     """Simulate rolling the DICE exactly NUM_ROLLS > 0 times. Return the sum of
     the outcomes unless any of the outcomes is 1. In that case, return 1.
@@ -45,8 +51,7 @@ def free_bacon(score):
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
-    ones = score % 10
-    tens = (score // 10)
+    [ones, tens] = get_ones_and_tens(score)
     smallerValue = min(ones, tens)
     return smallerValue + 1
     # END PROBLEM 2
@@ -80,7 +85,7 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    
+
     # END PROBLEM 4
 
 
