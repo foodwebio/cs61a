@@ -31,7 +31,7 @@ def roll_dice(num_rolls, dice=six_sided):
     pigout = False
     for _ in range(0, num_rolls):
         diceValue = dice()
-        if diceValue == 1:
+        if diceValue == 1:1
             pigout = True
         else:
             score += diceValue
