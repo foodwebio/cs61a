@@ -135,9 +135,45 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     player = 0  # Which player is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
-    # END PROBLEM 5
-    # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
-    # BEGIN PROBLEM 6
+    def get_player_info(player):
+        if player == 0:
+            return strategy0, score0, score1
+        else:
+            return strategy1, score1, score0
+
+    def get_new_score():
+        strategy, player_score, opponent_score = get_player_info(player)
+        num_rolls = strategy(player_score, opponent_score)
+        points = take_turn(num_rolls, opponent_score, dice)
+        new_score = player_score + points
+        return new_score
+
+    say_holding = None
+
+    while True:
+        new_score = get_new_score()
+        if player == 0:
+            score0 = new_score
+        else:
+            score1 = new_score
+        _a, player_score, _b = get_player_info(player)
+        _c, opponent_score, _d = get_player_info(other(player))
+        if (is_swap(player_score, opponent_score)):
+            score0, score1 = score1, score0
+
+        if say_holding is None:
+            say_holding = say(score0, score1)
+        else:
+            say_holding = say_holding(score0, score1)
+
+        if player_score >= goal:
+            break
+        if opponent_score >= goal:
+            break
+        player = other(player)
+        # END PROBLEM 5
+        # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
+        # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
     # END PROBLEM 6
     return score0, score1
@@ -227,6 +263,16 @@ def announce_highest(who, previous_high=0, previous_score=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def say(score0, score1):
+        curr_score = score0 if who == 0 else score1
+        score_diff = curr_score - previous_score
+        if score_diff > previous_high:
+            print(score_diff, "point(s)! That's the biggest gain yet for Player", who)
+            return announce_highest(who, score_diff, curr_score)
+        else:
+            return announce_highest(who, previous_high, curr_score)
+    return say
+
     # END PROBLEM 7
 
 
@@ -266,6 +312,13 @@ def make_averaged(fn, num_samples=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def average(*args):
+        result = 0
+        for _ in range(num_samples):
+            result += fn(*args)
+        return result / num_samples
+
+    return average
     # END PROBLEM 8
 
 
