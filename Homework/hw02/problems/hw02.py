@@ -169,16 +169,52 @@ def simple_prisoner_tournament(N, strategy1, strategy2):
 """
 
     "*** YOUR CODE HERE ***"
+    player1Sentence = 0
+    player2Sentence = 0
+
+    player1PrevDecision = None
+    player2PrevDecision = None
+    for _ in range(N):
+        player1Decision = strategy1(player2PrevDecision)
+        player2Decision = strategy2(player1PrevDecision)
+
+        if player1Decision and player2Decision:
+            player1Sentence += 1
+            player2Sentence += 1
+        elif not (player1Decision or player2Decision):
+            player1Sentence += 2
+            player2Sentence += 2
+        elif player1Decision:
+            player1Sentence += 3
+        else:
+            player2Sentence += 3
+
+        player1PrevDecision = player1Decision
+        player2PrevDecision = player2PrevDecision
+
+    return player1Sentence, player2Sentence
 
 
 "*** YOUR CODE HERE ***"
-nice = None        # Replace
+
+
+def nice(x): return True        # Replace
+
 
 "*** YOUR CODE HERE ***"
-rat = None         # Replace
+
+
+def rat(x): return False      # Replace
+
 
 "*** YOUR CODE HERE ***"
-tit_for_tat = None  # Replace
+
+
+def tit_for_tat(x):
+    if x == None:
+        return True
+    else:
+        return x
 
 
 def fancy_prisoner_tournament(N, strategy1, strategy2):
