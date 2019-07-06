@@ -87,5 +87,6 @@ def mean(s):
     -0.5
     """
     # BEGIN Question 1
-    "*** YOUR CODE HERE ***"
+    assert len(s) > 0, "The sequence cannot be empty"
+    return (sum(s) / len(s))
     # END Question 1
