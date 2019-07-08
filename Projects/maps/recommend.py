@@ -19,7 +19,7 @@ def find_closest(location, centroids):
     [2.0, 3.0]
     """
     # BEGIN Question 3
-    "*** YOUR CODE HERE ***"
+    return min(centroids, key=lambda x: distance(x, location))
     # END Question 3
 
 
@@ -49,13 +49,20 @@ def group_by_centroid(restaurants, centroids):
     """
     # BEGIN Question 4
     "*** YOUR CODE HERE ***"
+    clusters = []
+    for restaurant in restaurants:
+        closest_centroid = find_closest(
+            restaurant_location(restaurant), centroids)
+        clusters.append([closest_centroid, restaurant])
+    return group_by_first(clusters)
+
     # END Question 4
 
 
 def find_centroid(cluster):
     """Return the centroid of the locations of the restaurants in cluster."""
     # BEGIN Question 5
-    "*** YOUR CODE HERE ***"
+    return [mean([restaurant_location(restaurant)[0] for restaurant in cluster]), mean([restaurant_location(restaurant)[1] for restaurant in cluster])]
     # END Question 5
 
 
@@ -70,7 +77,8 @@ def k_means(restaurants, k, max_updates=100):
     while old_centroids != centroids and n < max_updates:
         old_centroids = centroids
         # BEGIN Question 6
-        "*** YOUR CODE HERE ***"
+        clusters = group_by_centroid(restaurants, centroids)
+        centroids = [find_centroid(cluster) for cluster in clusters]
         # END Question 6
         n += 1
     return centroids
@@ -95,7 +103,15 @@ def find_predictor(user, restaurants, feature_fn):
     ys = [user_rating(user, restaurant_name(r)) for r in restaurants]
 
     # BEGIN Question 7
-    "*** YOUR CODE HERE ***"
+    xs_mean = mean(xs)
+    ys_mean = mean(ys)
+    xy_zip = zip(xs, ys)
+    S_xx = sum([(x - xs_mean) ** 2 for x in xs])
+    S_yy = sum([(y - ys_mean) ** 2 for y in ys])
+    S_xy = sum([(x - xs_mean) * (y - ys_mean) for x, y in xy_zip])
+    b = S_xy / S_xx
+    a = ys_mean - b * xs_mean
+    r_squared = (S_xy ** 2) / (S_xx * S_yy)
     # END Question 7
 
     def predictor(restaurant):
@@ -116,7 +132,10 @@ def best_predictor(user, restaurants, feature_fns):
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 8
     "*** YOUR CODE HERE ***"
+    feature_fns_results = [find_predictor(
+        user, reviewed, feature_fn) for feature_fn in feature_fns]
     # END Question 8
+    return max(feature_fns_results, key=lambda x: x[1])[0]
 
 
 def rate_all(user, restaurants, feature_fns):
@@ -130,8 +149,17 @@ def rate_all(user, restaurants, feature_fns):
     """
     predictor = best_predictor(user, ALL_RESTAURANTS, feature_fns)
     reviewed = user_reviewed_restaurants(user, restaurants)
+
+    ratings = {}
     # BEGIN Question 9
     "*** YOUR CODE HERE ***"
+    for restaurant in restaurants:
+        name = restaurant_name(restaurant)
+        if restaurant in reviewed:
+            ratings[name] = user_rating(user, name)
+        else:
+            ratings[name] = predictor(restaurant)
+    return ratings
     # END Question 9
 
 
@@ -144,6 +172,7 @@ def search(query, restaurants):
     """
     # BEGIN Question 10
     "*** YOUR CODE HERE ***"
+    return [restaurant for restaurant in restaurants if query in restaurant_categories(restaurant)]
     # END Question 10
 
 
